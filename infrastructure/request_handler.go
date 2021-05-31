@@ -25,7 +25,7 @@ func NewRequestHandler(env Env) RequestHandler {
 	}))
 
 	httpRouter.GET("/health-check", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "Digital signature API Up and Running"})
+		c.JSON(http.StatusOK, gin.H{"data": "Travel Agency API Up and Running"})
 	})
 	return RequestHandler{Gin: httpRouter}
 }

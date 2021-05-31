@@ -17,11 +17,12 @@ var Module = fx.Options(
 func fxmodule(
 	lifecycle fx.Lifecycle,
 	handler infrastructure.RequestHandler,
+	routes routes.Route,
 	logger infrastructure.Logger,
 	env infrastructure.Env,
 	migrations infrastructure.Migrations,
 	database infrastructure.Database,
-	routes routes.Routes,
+
 ) {
 	conn, _ := database.DB.DB()
 	lifecycle.Append(fx.Hook{
