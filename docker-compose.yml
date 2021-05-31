@@ -1,0 +1,41 @@
+version: "3.3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web.Dockerfile
+    ports:
+      - 5000:5000
+      - 5002:2345
+    volumes:
+      - .:/clean_web
+    env_file: .env
+    container_name: travel-web
+    depends_on:
+      - database
+
+  database:
+    build:
+      context: .
+      dockerfile: ./docker/db.Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: travel
+    container_name: travel-db
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
+    ports:
+      - 33066:3306
+    volumes:
+      - travel_db:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    ports:
+      - 5001:8080
+
+volumes:
+  travel_db:
+      
