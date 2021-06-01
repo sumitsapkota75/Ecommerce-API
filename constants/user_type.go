@@ -5,7 +5,7 @@ const (
 	MemberUserType string = "member"
 
 	// ClientUserType Usertype
-	ClientUserType string = "user"
+	CustomerUserType string = "customer"
 
 	// UnregisteredUserType Usertype
 	UnregisteredUserType string = "unregistered"

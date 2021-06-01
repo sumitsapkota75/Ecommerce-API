@@ -1,28 +1,25 @@
 package routes
 
 import (
-	"travel/api/responses"
+	"travel/api/controllers"
+	"travel/api/middlewares"
 	"travel/infrastructure"
-
-	"github.com/gin-gonic/gin"
 )
 
 type UserRoutes struct {
-	logger  infrastructure.Logger
-	handler infrastructure.RequestHandler
-	// clientController controllers.ClientController
+	logger         infrastructure.Logger
+	handler        infrastructure.RequestHandler
+	userController controllers.UserController
 
-	// middleware middlewares.AuthMiddleware
+	middleware middlewares.AuthMiddleware
 }
 
 // Setup user Routes
 func (u UserRoutes) Setup() {
 	u.logger.Zap.Info(" Setting up user routes 👤 -------------")
-	user := u.handler.Gin.Group("/users")
+	user := u.handler.Gin.Group("/user")
 	{
-		user.GET("", func(c *gin.Context) {
-			responses.JSON(c, 200, "Users api get running")
-		})
+		user.POST("", u.userController.CreateUser)
 	}
 }
 
@@ -30,13 +27,13 @@ func (u UserRoutes) Setup() {
 func NewUserRoutes(
 	logger infrastructure.Logger,
 	handler infrastructure.RequestHandler,
-	// clientController controllers.ClientController,
-	// middleware middlewares.AuthMiddleware,
+	userController controllers.UserController,
+	middleware middlewares.AuthMiddleware,
 ) UserRoutes {
 	return UserRoutes{
-		handler: handler,
-		logger:  logger,
-		// clientController: clientController,
-		// middleware: middleware,
+		handler:        handler,
+		logger:         logger,
+		userController: userController,
+		middleware:     middleware,
 	}
 }

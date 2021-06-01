@@ -2,7 +2,11 @@ package fxmodule
 
 import (
 	"context"
+	"travel/api/controllers"
+	"travel/api/middlewares"
+	"travel/api/repository"
 	"travel/api/routes"
+	"travel/api/services"
 	"travel/infrastructure"
 
 	"go.uber.org/fx"
@@ -10,6 +14,10 @@ import (
 
 var Module = fx.Options(
 	infrastructure.Module,
+	controllers.Module,
+	services.Module,
+	repository.Module,
+	middlewares.Module,
 	routes.Module,
 	fx.Invoke(fxmodule),
 )
