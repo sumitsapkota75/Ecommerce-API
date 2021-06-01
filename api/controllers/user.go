@@ -68,7 +68,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 
 }
 
-// GetUserByID -> gets a user by ID
+// GetUserProfile -> gets a user by ID
 func (u UserController) GetUserProfile(c *gin.Context) {
 	uid := c.MustGet(constants.UID).(string)
 	user, err := u.userService.GetUserByID(uid)
