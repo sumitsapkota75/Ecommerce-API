@@ -29,3 +29,8 @@ func (s UserService) WithTrx(trxHandle *gorm.DB) UserService {
 func (s UserService) CreateUser(user models.User) (models.User, error) {
 	return s.repository.CreateUser(user)
 }
+
+// GetUserByID -> returns a user by UID
+func (s UserService) GetUserByID(userID string) (models.User, error) {
+	return s.repository.GetUserByID(userID)
+}

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"travel/api/responses"
 	"travel/api/services"
+	"travel/constants"
 	"travel/infrastructure"
 	"travel/models"
 
@@ -29,34 +29,68 @@ func NewUserController(logger infrastructure.Logger, userService services.UserSe
 
 // CreateUser -> creates the user
 func (u UserController) CreateUser(c *gin.Context) {
-	// requestUser := struct {
-	// 	models.User
-	// }{}
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		// u.logger.Zap.Error("Error (ShouldBindJSON) ::", err.Error())
+	requestUser := struct {
+		models.User
+		Password string `json:"password"`
+	}{}
+	if err := c.ShouldBindJSON(&requestUser); err != nil {
+		u.logger.Zap.Error("Error (ShouldBindJSON) ::", err.Error())
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error parsing json request")
 		return
 	}
-	fmt.Println("request user", user.Address)
-	// _, firebaseErr := u.firebaseService.CreateUser(user.Email, "passowrd", user.Name, constants.CustomerUserType)
-	// if firebaseErr != nil {
-	// 	u.logger.Zap.Error("Error [create firebase user] ::", firebaseErr)
-	// 	responses.ErrorJSON(c, http.StatusBadRequest, "The provided email is already in use")
-	// 	return
-	// }
-	// var user models.User
-	// user.Address = user.Address
-	// user.Email = user.Email
-	// user.Name = requestUser.Name
-	// user.Name = "sumit"
-	// u.logger.Zap.Info("Creating user ")
+	// Checks for firebase existing user
+	firebaseID := u.firebaseService.GetUserByEmail(requestUser.Email)
+	if firebaseID != "" {
+		u.logger.Zap.Error("Error [create firebase user] ::")
+		responses.ErrorJSON(c, http.StatusBadRequest, "The provided email is already in use")
+		return
+	}
+	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, constants.CustomerUserType)
+	if firebaseErr != nil {
+		u.logger.Zap.Error("Error [create firebase user] ::", firebaseErr)
+		responses.ErrorJSON(c, http.StatusBadRequest, "Error creating user in firebase")
+		return
+	}
+	var user models.User
+	user.ID = firebaseID
+	user.Address = requestUser.Address
+	user.Phone = requestUser.Phone
+	user.Email = requestUser.Email
+	user.Name = requestUser.Name
+	user.UserType = constants.CustomerUserType
 	_, err := u.userService.CreateUser(user)
 	if err != nil {
-		// u.logger.Zap.Error("Error [db CreateUser]: ", err.Error())
-		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to create User")
+		u.logger.Zap.Error("Error [db CreateUser]: ", err.Error())
+		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to Save User in Database")
 		return
 	}
 	responses.SuccessJSON(c, http.StatusOK, "User created successfully")
+
+}
+
+// GetUserByID -> gets a user by ID
+func (u UserController) GetUserProfile(c *gin.Context) {
+	uid := c.MustGet(constants.UID).(string)
+	user, err := u.userService.GetUserByID(uid)
+	if err != nil {
+		u.logger.Zap.Error("Error getting user ::", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "failed to get user")
+		return
+	}
+	responses.JSON(c, http.StatusOK, user)
+}
+
+//UpdateUser
+func (u UserController) UpdateUser(c *gin.Context) {
+
+	requestUser := struct {
+		models.User
+		Password string `json:"password"`
+	}{}
+	if err := c.ShouldBindJSON(&requestUser); err != nil {
+		u.logger.Zap.Error("Error [ShouldBindJSON] ::", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "failed to parse json data")
+		return
+	}
 
 }

@@ -35,3 +35,8 @@ func (r UserRepository) WithTrx(trxHandle *gorm.DB) UserRepository {
 func (u UserRepository) CreateUser(user models.User) (models.User, error) {
 	return user, u.db.DB.Create(&user).Error
 }
+
+//GetUserByID -> gets the user by uid
+func (u UserRepository) GetUserByID(userID string) (user models.User, err error) {
+	return user, u.db.DB.Where("id = ?", userID).First(&user).Error
+}
