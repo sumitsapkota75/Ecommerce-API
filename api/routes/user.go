@@ -20,7 +20,7 @@ func (u UserRoutes) Setup() {
 	user := u.handler.Gin.Group("/user")
 	{
 		user.POST("/signup", u.userController.CreateUser)
-		user.GET("/profile", u.userController.GetUserProfile)
+		user.GET("/profile", u.middleware.Handle(), u.userController.GetUserProfile)
 	}
 }
 

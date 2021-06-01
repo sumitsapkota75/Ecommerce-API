@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"travel/api/responses"
 	"travel/api/services"
@@ -64,6 +65,11 @@ func (u UserController) CreateUser(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to Save User in Database")
 		return
 	}
+	msg, err := u.firebaseService.GenerateEmailVerificationLink(requestUser.Email)
+	if err != nil {
+		fmt.Println("Error", err)
+	}
+	u.logger.Zap.Info(msg)
 	responses.SuccessJSON(c, http.StatusOK, "User created successfully")
 
 }
