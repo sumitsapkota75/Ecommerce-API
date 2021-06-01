@@ -34,3 +34,8 @@ func (s UserService) CreateUser(user models.User) (models.User, error) {
 func (s UserService) GetUserByID(userID string) (models.User, error) {
 	return s.repository.GetUserByID(userID)
 }
+
+// UpdateUser -> updates the user data
+func (s UserService) UpdateUser(user models.User) error {
+	return s.repository.UpdateUser(user)
+}

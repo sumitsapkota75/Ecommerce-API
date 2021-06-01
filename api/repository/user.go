@@ -40,3 +40,15 @@ func (u UserRepository) CreateUser(user models.User) (models.User, error) {
 func (u UserRepository) GetUserByID(userID string) (user models.User, err error) {
 	return user, u.db.DB.Where("id = ?", userID).First(&user).Error
 }
+
+//UpdateUser -> updates the user data
+func (u UserRepository) UpdateUser(user models.User) error {
+	return u.db.DB.Model(&models.User{}).
+		Where("id = ?", user.ID).
+		Updates(map[string]interface{}{
+			"name":    user.Name,
+			"email":   user.Email,
+			"address": user.Address,
+			"phone":   user.Phone,
+		}).Error
+}

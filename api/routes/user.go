@@ -21,6 +21,7 @@ func (u UserRoutes) Setup() {
 	{
 		user.POST("/signup", u.userController.CreateUser)
 		user.GET("/profile", u.middleware.Handle(), u.userController.GetUserProfile)
+		user.POST("/update", u.middleware.Handle(), u.userController.UpdateUser)
 	}
 }
 
