@@ -7,6 +7,7 @@ import (
 	"travel/constants"
 	"travel/infrastructure"
 	"travel/models"
+	"travel/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,6 +26,18 @@ func NewUserController(logger infrastructure.Logger, userService services.UserSe
 		userService:     userService,
 		firebaseService: firebaseService,
 	}
+}
+
+//GetAllUsers -> get the list of users
+func (u UserController) GetAllUsers(c *gin.Context) {
+	pagination := utils.BuildPagination(c)
+	users, count, err := u.userService.GetAllUsers(pagination)
+	if err != nil {
+		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to get users")
+		return
+	}
+
+	responses.JSONCount(c, http.StatusOK, users, int(count))
 }
 
 // CreateUser -> creates the user

@@ -19,6 +19,7 @@ func (u UserRoutes) Setup() {
 	u.logger.Zap.Info(" Setting up user routes 👤 -------------")
 	user := u.handler.Gin.Group("/user")
 	{
+		user.GET("", u.middleware.Handle(), u.userController.GetAllUsers)
 		user.POST("/signup", u.userController.CreateUser)
 		user.GET("/profile", u.middleware.Handle(), u.userController.GetUserProfile)
 		user.POST("/update", u.middleware.Handle(), u.userController.UpdateUser)

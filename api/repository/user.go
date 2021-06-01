@@ -3,6 +3,7 @@ package repository
 import (
 	"travel/infrastructure"
 	"travel/models"
+	"travel/utils"
 
 	"gorm.io/gorm"
 )
@@ -29,6 +30,24 @@ func (r UserRepository) WithTrx(trxHandle *gorm.DB) UserRepository {
 	}
 	r.db.DB = trxHandle
 	return r
+}
+
+//GetAllUsers -> returns list of user
+func (u UserRepository) GetAllUsers(pagination utils.Pagination) ([]models.User, int64, error) {
+	var users []models.User
+	var count int64
+	querybuilder := u.db.DB.Limit(pagination.PageSize).Offset(pagination.Offset)
+	if pagination.All {
+		querybuilder = u.db.DB
+	}
+	err := querybuilder.Model(&models.User{}).
+		Order("created_at asc").
+		Where(&users).
+		Find(&users).
+		Offset(-1).
+		Limit(-1).
+		Count(&count).Error
+	return users, count, err
 }
 
 // CreateUser -> creates new user
