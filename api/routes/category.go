@@ -14,18 +14,20 @@ type CategoryRoutes struct {
 	middleware middlewares.AuthMiddleware
 }
 
-// Setup user Routes
+// Setup category Routes
 func (u CategoryRoutes) Setup() {
 	u.logger.Zap.Info(" Setting up category routes 👤 -------------")
-	user := u.handler.Gin.Group("/category")
+	category := u.handler.Gin.Group("/category")
 	{
-		user.GET("", u.categoryController.GetAllCategories)
-		user.POST("", u.categoryController.CreateCategory)
+		category.GET("", u.categoryController.GetAllCategories)
+		category.POST("", u.categoryController.CreateCategory)
+		category.GET("/:id", u.categoryController.GetCategoryByID)
+		category.POST("/:id", u.categoryController.UpdateCategory)
 
 	}
 }
 
-// NewCategoryRoutes creates new user controller
+// NewCategoryRoutes creates new category controller
 func NewCategoryRoutes(
 	logger infrastructure.Logger,
 	handler infrastructure.RequestHandler,

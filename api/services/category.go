@@ -27,3 +27,13 @@ func (c CategoryService) GetAllCategories(searchParams models.CategorySearchPara
 func (c CategoryService) CreateCategory(category models.Category) error {
 	return c.repository.CreateCategory(category)
 }
+
+//GetCategoryByID -> gets a category by ir
+func (c CategoryService) GetCategoryByID(ID int) (models.Category, error) {
+	return c.repository.GetCategoryByID(ID)
+}
+
+//UpdateCategory -> updates the category data
+func (c CategoryService) UpdateCategory(category models.Category) error {
+	return c.repository.UpdateCategory(category)
+}

@@ -60,3 +60,19 @@ func (c CategoryRepository) GetAllCategories(searchParams models.CategorySearchP
 func (c CategoryRepository) CreateCategory(category models.Category) error {
 	return c.db.DB.Create(&category).Error
 }
+
+//GetCategoryByID -> gets a category by ID
+func (c CategoryRepository) GetCategoryByID(ID int) (category models.Category, err error) {
+	return category, c.db.DB.Model(&models.Category{}).Where("id = ?", ID).First(&category).Error
+}
+
+// UpdateCategory -> updates category detail
+func (c CategoryRepository) UpdateCategory(category models.Category) error {
+	return c.db.DB.Model(&models.Category{}).
+		Where("id = ?", category.ID).
+		Updates(map[string]interface{}{
+			"name":        category.Name,
+			"description": category.Description,
+			"thumbnail":   category.Thumbnail,
+		}).Error
+}
