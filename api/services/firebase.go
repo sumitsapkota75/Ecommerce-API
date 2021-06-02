@@ -54,8 +54,8 @@ func (fb *FirebaseService) CreateUser(email, password, username, role string) (s
 		return "", err
 	}
 
-	//Adding claims as staff
-	claims := map[string]interface{}{"role": role}
+	// Adding claims as staff
+	claims := map[string]interface{}{"role": "user"}
 	err = fb.Firebase.SetCustomUserClaims(context.Background(), u.UID, claims)
 	if err != nil {
 		return "Internal Server Error", err
@@ -135,7 +135,7 @@ func (fb *FirebaseService) CreateDeactivatedUser(email, role string) (string, er
 
 func (fb *FirebaseService) GenerateEmailVerificationLink(email string) (string, error) {
 	params := (&auth.ActionCodeSettings{
-		URL: fb.Env.ClientURI,
+		URL: "http://localhost:8000/auth",
 	})
 	return fb.Firebase.EmailVerificationLinkWithSettings(context.Background(), email, params)
 }

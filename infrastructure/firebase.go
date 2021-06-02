@@ -52,3 +52,5 @@ func NewFCMClient(logger Logger, app *firebase.App) *messaging.Client {
 	}
 	return messagingClient
 }
+
+
