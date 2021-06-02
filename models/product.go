@@ -13,13 +13,13 @@ type Product struct {
 	Category           Category `json:"category"`
 	BrandID            uint     `json:"brand_id"`
 	Brand              Brand    `json:"brand"`
-	CostPrice          string   `json:"const_price"`
+	CostPrice          string   `json:"cost_price"`
 	Price              string   `json:"price"`
 	Slug               string   `json:"slug"`
 	Code               string   `json:"code"`
 	Quantity           uint     `json:"quantity"`
 	Description        string   `json:"description"`
-	Specification      string   `json:"string"`
+	Specification      string   `json:"specification"`
 	TopSelling         int      `json:"top_selling"`
 	NewArrival         int      `json:"new_arrival"`
 	DailyDeal          int      `json:"daily_deal"`
