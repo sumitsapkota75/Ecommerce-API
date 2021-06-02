@@ -12,7 +12,7 @@ type CategoryService struct {
 }
 
 //NewCategoryService -> constructor
-func NewCategoryRepository(repository repository.CategoryRepository) CategoryService {
+func NewCategoryService(repository repository.CategoryRepository) CategoryService {
 	return CategoryService{
 		repository: repository,
 	}
