@@ -35,11 +35,11 @@ func fxmodule(
 	conn, _ := database.DB.DB()
 	lifecycle.Append(fx.Hook{
 		OnStart: func(context.Context) error {
-			logger.Zap.Info("------- Starting Application --")
-			logger.Zap.Info("-------------------------------")
-			logger.Zap.Info("------- Travel Agency API 📒 -------")
-			logger.Zap.Info("-------------------------------")
-			logger.Zap.Info(" 🚌 Migrating DB Schema .......")
+			logger.Zap.Info("------- Starting Application ------")
+			logger.Zap.Info("-----------------------------------")
+			logger.Zap.Info("------- Travel Agency API 📒 ------")
+			logger.Zap.Info("-----------------------------------")
+			logger.Zap.Info("🚌 Migrating DB Schema .......")
 			migrations.Migrate()
 
 			conn.SetMaxOpenConns(10)
