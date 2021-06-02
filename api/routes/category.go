@@ -23,6 +23,7 @@ func (u CategoryRoutes) Setup() {
 		category.POST("", u.categoryController.CreateCategory)
 		category.GET("/:id", u.categoryController.GetCategoryByID)
 		category.POST("/:id", u.categoryController.UpdateCategory)
+		category.DELETE("/:id", u.categoryController.DeleteCategory)
 
 	}
 }

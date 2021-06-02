@@ -37,3 +37,8 @@ func (c CategoryService) GetCategoryByID(ID int) (models.Category, error) {
 func (c CategoryService) UpdateCategory(category models.Category) error {
 	return c.repository.UpdateCategory(category)
 }
+
+//DeleteCategory -> deletes the category
+func (c CategoryService) DeleteCategory(category models.Category) error {
+	return c.repository.DeleteCategory(category)
+}

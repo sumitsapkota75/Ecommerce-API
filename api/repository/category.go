@@ -76,3 +76,8 @@ func (c CategoryRepository) UpdateCategory(category models.Category) error {
 			"thumbnail":   category.Thumbnail,
 		}).Error
 }
+
+// DeleteCategory -> deletes category
+func (c CategoryRepository) DeleteCategory(category models.Category) error {
+	return c.db.DB.Delete(&models.Category{}, category.ID).Error
+}
