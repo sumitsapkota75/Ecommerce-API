@@ -10,8 +10,8 @@ Files reference to: https://drive.google.com/drive/folders/1L1z_SEj1CyvHkhGjranR
 
 #### Migration Commands
 
-| Command            | Desc                                           |
-| -------------- | ---------------------------------------------- |
+| Command             | Desc                                           |
+| ------------------- | ---------------------------------------------- |
 | `make migrate-up`   | runs migration up command                      |
 | `make migrate-down` | runs migration down command                    |
 | `make force`        | Set particular version but don't run migration |

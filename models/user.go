@@ -4,11 +4,12 @@ package models
 
 type User struct {
 	Base
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	UserType string `json:"user_type,omitempty"`
-	Phone    string `json:"phone"`
-	Address  string `json:"address"`
+	Name       string `json:"name"`
+	Email      string `json:"email"`
+	UserType   string `json:"user_type,omitempty"`
+	Phone      string `json:"phone"`
+	Address    string `json:"address"`
+	IsVerified uint   `json:"is_verified"`
 }
 
 // TableName  -> returns table name of model

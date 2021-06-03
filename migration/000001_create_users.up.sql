@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `address` VARCHAR(200) NOT NULL,
     `phone` VARCHAR(10) NOT NULL,
     `user_type` VARCHAR(30) NOT NULL DEFAULT 'customer', /* Customer, admin */
+    `is_verified` TINYINT UNSIGNED NOT NULL DEFAULT 0,
     `created_at` DATETIME NOT NULL,
     `updated_at` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
