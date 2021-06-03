@@ -1,8 +1,9 @@
 ## E-commerce-API :books:
 
 ## How to get started ? :tada:
-```sh
 :arrow_right: create below two files in `root` directory of project :heavy_check_mark:
+
+```sh
 1 `.env`
 2 `.serviceAccountKey.json` 
 ```
