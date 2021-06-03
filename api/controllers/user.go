@@ -17,14 +17,21 @@ type UserController struct {
 	logger          infrastructure.Logger
 	userService     services.UserService
 	firebaseService services.FirebaseService
+	gmailService    services.GmailService
 }
 
 // NewUserController -> creates new user controller
-func NewUserController(logger infrastructure.Logger, userService services.UserService, firebaseService services.FirebaseService) UserController {
+func NewUserController(
+	logger infrastructure.Logger,
+	userService services.UserService,
+	firebaseService services.FirebaseService,
+	gmailService services.GmailService,
+) UserController {
 	return UserController{
 		logger:          logger,
 		userService:     userService,
 		firebaseService: firebaseService,
+		gmailService:    gmailService,
 	}
 }
 
@@ -64,6 +71,23 @@ func (u UserController) CreateUser(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error creating user in firebase")
 		return
 	}
+	// Generate email verification link
+	verificationLink, err := u.firebaseService.GenerateEmailVerificationLink(requestUser.Email)
+	if err != nil {
+		responses.ErrorJSON(c, http.StatusInternalServerError, "Failed to generate email")
+		return
+	}
+
+	var emailDatas models.EmailParams
+	emailDatas.To = requestUser.Email
+	emailDatas.Subject = "Test Subject"
+	emailDatas.Body = verificationLink
+	emailDatas.Lang = "En"
+	if err := u.gmailService.SendGmail(emailDatas); err != nil {
+		u.logger.Zap.Error("Failed to send email", err.Error())
+		responses.ErrorJSON(c, http.StatusInternalServerError, "Failed to send email"+err.Error())
+		return
+	}
 	var user models.User
 	user.ID = firebaseID
 	user.Address = requestUser.Address
@@ -71,7 +95,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 	user.Email = requestUser.Email
 	user.Name = requestUser.Name
 	user.UserType = constants.CustomerUserType
-	_, err := u.userService.CreateUser(user)
+	_, err = u.userService.CreateUser(user)
 	if err != nil {
 		u.logger.Zap.Error("Error [db CreateUser]: ", err.Error())
 		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to Save User in Database")
@@ -133,5 +157,4 @@ func (u UserController) UpdateUser(c *gin.Context) {
 		return
 	}
 	responses.JSON(c, http.StatusBadRequest, "User updated successfully")
-
 }

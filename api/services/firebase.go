@@ -135,7 +135,7 @@ func (fb *FirebaseService) CreateDeactivatedUser(email, role string) (string, er
 
 func (fb *FirebaseService) GenerateEmailVerificationLink(email string) (string, error) {
 	params := (&auth.ActionCodeSettings{
-		URL: "http://localhost:8000/auth",
+		URL: fb.Env.ClientURI, 
 	})
 	return fb.Firebase.EmailVerificationLinkWithSettings(context.Background(), email, params)
 }

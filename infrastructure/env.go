@@ -23,6 +23,7 @@ type Env struct {
 	AdminURI          string
 	ClientURI         string
 	StripeKey         string
+	AccessToken       string
 }
 
 // NewEnv creates a new environment
@@ -52,4 +53,5 @@ func (env *Env) LoadEnv() {
 	env.AdminURI = os.Getenv("AdminURI")
 	env.ClientURI = os.Getenv("ClientURI")
 	env.StripeKey = os.Getenv("StripeKey")
+	env.AccessToken = os.Getenv("AccessToken")
 }

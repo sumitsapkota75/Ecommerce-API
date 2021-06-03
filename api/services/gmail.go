@@ -23,19 +23,17 @@ func NewGmailService(
 	}
 }
 
-func (e *GmailService) SendGmail(emailParams models.EmailParams) error {
+func (e GmailService) SendGmail(emailParams models.EmailParams) error {
 	var msgString string
-	to := emailParams.To
-	msgString = to + "\r\n"
-	subject := emailParams.Subject + "\r\n"
-	msgString = msgString + subject
-	body := emailParams.Body
-	msgString = msgString + "\r\n" + body
+	to := "To: " + emailParams.To + "\r\n"
+	msgString = to
+	subject := "Subject: " + emailParams.Subject
+	msgString = msgString + subject + "\r\n"
+	msgString = msgString + "\n" + emailParams.Body
 
 	msg := gmail.Message{
-		Raw: base64.StdEncoding.EncodeToString([]byte(msgString)),
+		Raw: base64.URLEncoding.EncodeToString([]byte(msgString)),
 	}
-
 	_, err := e.gmailService.Users.Messages.Send("me", &msg).Do()
 	if err != nil {
 		return err

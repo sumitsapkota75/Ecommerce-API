@@ -12,4 +12,5 @@ var Module = fx.Options(
 	fx.Provide(NewFirebaseApp),
 	fx.Provide(NewFBAuth),
 	fx.Provide(NewFCMClient),
+	fx.Provide(NewGmailService),
 )
