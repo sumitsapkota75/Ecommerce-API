@@ -3,10 +3,11 @@
 ## How to get started ? :tada:
 :arrow_right: create below two files in `root` directory of project :heavy_check_mark:
 
-:one: `.env` <br />
-:two: `serviceAccountKey.json` 
+- `.env` <br />
+- `serviceAccountKey.json` 
 
-- Reference documents: https://drive.google.com/drive/folders/1L1z_SEj1CyvHkhGjranRYglcrq_EESaB?usp=sharing  :book:
+#### Reference documents :book:
+1. https://drive.google.com/drive/folders/1L1z_SEj1CyvHkhGjranRYglcrq_EESaB?usp=sharing  
 
 ## commands :wrench:
 
