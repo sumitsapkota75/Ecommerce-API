@@ -9,7 +9,7 @@ type User struct {
 	UserType   string `json:"user_type,omitempty"`
 	Phone      string `json:"phone"`
 	Address    string `json:"address"`
-	IsVerified string `json:"is_verified"`
+	IsVerified uint   `json:"is_verified"`
 }
 
 // TableName  -> returns table name of model

@@ -24,8 +24,9 @@ func NewGmailService(logger Logger, env Env) *gmail.Service {
 	expiry, _ := time.Parse("2006-01-02", "2022-10-25")
 	token := oauth2.Token{
 		AccessToken: env.AccessToken,
-		// RefreshToken: 
+		// RefreshToken: 1//04Lg5wfTuscjmCgYIARAAGAQSNwF-L9IrYgHXCqrBvJOILxqJ9OXec0rHfPXG6t3hzMqomhusUKWEzQgeZCQDw0NpXMmPhdELRv4,
 		TokenType:    "Bearer",
+		// Expiry is the optional expiration time of the access token.
 		Expiry:       expiry,
 	}
 	var tokenSource = config.TokenSource(ctx, &token)
