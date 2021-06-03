@@ -3,6 +3,7 @@ package repository
 import (
 	"travel/infrastructure"
 	"travel/models"
+	"travel/utils"
 
 	"gorm.io/gorm"
 )
@@ -31,6 +32,24 @@ func (r UserRepository) WithTrx(trxHandle *gorm.DB) UserRepository {
 	return r
 }
 
+//GetAllUsers -> returns list of user
+func (u UserRepository) GetAllUsers(pagination utils.Pagination) ([]models.User, int64, error) {
+	var users []models.User
+	var count int64
+	querybuilder := u.db.DB.Limit(pagination.PageSize).Offset(pagination.Offset)
+	if pagination.All {
+		querybuilder = u.db.DB
+	}
+	err := querybuilder.Model(&models.User{}).
+		Order("created_at asc").
+		Where(&users).
+		Find(&users).
+		Offset(-1).
+		Limit(-1).
+		Count(&count).Error
+	return users, count, err
+}
+
 // CreateUser -> creates new user
 func (u UserRepository) CreateUser(user models.User) (models.User, error) {
 	return user, u.db.DB.Create(&user).Error
@@ -39,4 +58,16 @@ func (u UserRepository) CreateUser(user models.User) (models.User, error) {
 //GetUserByID -> gets the user by uid
 func (u UserRepository) GetUserByID(userID string) (user models.User, err error) {
 	return user, u.db.DB.Where("id = ?", userID).First(&user).Error
+}
+
+//UpdateUser -> updates the user data
+func (u UserRepository) UpdateUser(user models.User) error {
+	return u.db.DB.Model(&models.User{}).
+		Where("id = ?", user.ID).
+		Updates(map[string]interface{}{
+			"name":    user.Name,
+			"email":   user.Email,
+			"address": user.Address,
+			"phone":   user.Phone,
+		}).Error
 }

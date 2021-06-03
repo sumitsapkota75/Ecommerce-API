@@ -7,6 +7,7 @@ import (
 	"travel/constants"
 	"travel/infrastructure"
 	"travel/models"
+	"travel/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,6 +26,18 @@ func NewUserController(logger infrastructure.Logger, userService services.UserSe
 		userService:     userService,
 		firebaseService: firebaseService,
 	}
+}
+
+//GetAllUsers -> get the list of users
+func (u UserController) GetAllUsers(c *gin.Context) {
+	pagination := utils.BuildPagination(c)
+	users, count, err := u.userService.GetAllUsers(pagination)
+	if err != nil {
+		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to get users")
+		return
+	}
+
+	responses.JSONCount(c, http.StatusOK, users, int(count))
 }
 
 // CreateUser -> creates the user
@@ -82,7 +95,7 @@ func (u UserController) GetUserProfile(c *gin.Context) {
 
 //UpdateUser
 func (u UserController) UpdateUser(c *gin.Context) {
-
+	uid := c.MustGet(constants.UID).(string)
 	requestUser := struct {
 		models.User
 		Password string `json:"password"`
@@ -92,5 +105,33 @@ func (u UserController) UpdateUser(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadRequest, "failed to parse json data")
 		return
 	}
+	user, err := u.userService.GetUserByID(uid)
+	if err != nil {
+		u.logger.Zap.Error("Error getting user data ::", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "failed to get user data")
+		return
+	}
+	// Checks for firebase existing user and update firebase authentication details
+	if err := u.firebaseService.UpdateUserAuth(
+		uid,
+		requestUser.Email,
+		requestUser.Password,
+		requestUser.Name,
+		true,
+	); err != nil {
+		u.logger.Zap.Error("Error [UpdateUserAuth] ::", err.Error())
+		responses.ErrorJSON(c, http.StatusBadRequest, "The provided email is already in use")
+		return
+	}
+	user.Name = requestUser.Name
+	user.Address = requestUser.Address
+	user.Phone = requestUser.Phone
+	user.Email = requestUser.Email
+	if err := u.userService.UpdateUser(user); err != nil {
+		u.logger.Zap.Error("Failed to update the user ::", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "failed to update the user data")
+		return
+	}
+	responses.JSON(c, http.StatusBadRequest, "User updated successfully")
 
 }
