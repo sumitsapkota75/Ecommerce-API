@@ -1,8 +1,8 @@
 package constants
 
 const (
-	// MemberUserType Usertype
-	MemberUserType string = "member"
+	// AdminUserType Usertype
+	AdminUserType string = "admin"
 
 	// ClientUserType Usertype
 	CustomerUserType string = "customer"
