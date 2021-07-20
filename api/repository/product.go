@@ -47,6 +47,8 @@ func (p ProductRepository) GetAllProducts(searchParams models.ProductSearchParam
 
 	}
 	err := queryBuilder.Model(&models.Product{}).
+		Preload("Category").
+		Preload("Brand").
 		Order("updated_at desc").
 		Where(&products).
 		Find(&products).
