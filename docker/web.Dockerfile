@@ -1,5 +1,4 @@
-FROM golang:1.14
-
+FROM golang:1.15
 # install build essentials
 RUN apt-get update && \
     apt-get install -y wget build-essential pkg-config --no-install-recommends
