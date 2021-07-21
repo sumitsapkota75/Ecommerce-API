@@ -57,3 +57,44 @@ func (p ProductRepository) GetAllProducts(searchParams models.ProductSearchParam
 		Count(&count).Error
 	return products, count, err
 }
+
+// AddProduct -> creates a new product
+func (p ProductRepository) AddProduct(product models.Product) error {
+	return p.db.DB.Create(&product).Error
+}
+
+// GetProductByID -> gets a product by ID
+func (p ProductRepository) GetProductByID(productID int) (product models.Product, err error) {
+	return product, p.db.DB.Model(&models.Product{}).Preload("Category").Preload("Brand").Where("id = ?", productID).First(&product).Error
+}
+
+// UpdateProduct -> updates the product
+func (p ProductRepository) UpdateProduct(product models.Product) error {
+	return p.db.DB.Model(&models.Product{}).Where("id=?", product.ID).
+		Updates(map[string]interface{}{
+			"name":                product.Name,
+			"category_id":         product.CategoryID,
+			"brand_id":            product.BrandID,
+			"cost_price":          product.CostPrice,
+			"price":               product.Price,
+			"slug":                product.Slug,
+			"code":                product.Code,
+			"quantity":            product.Quantity,
+			"description":         product.Description,
+			"specification":       product.Specification,
+			"top_selling":         product.TopSelling,
+			"new_arrival":         product.NewArrival,
+			"daily_deal":          product.DailyDeal,
+			"order_limit":         product.OrderLimit,
+			"stock_alert":         product.StockAlert,
+			"refundable":          product.Refundable,
+			"featured_collection": product.FeaturedCollection,
+			"thumbnail":           product.Thumbnail,
+			"is_active":           product.IsActive,
+		}).Error
+}
+
+// DeleteProduct deletes the given user
+func (p ProductRepository) DeleteProduct(ProductID int) error {
+	return p.db.DB.Where("id = ?", ProductID).Delete(&models.Product{}).Error
+}

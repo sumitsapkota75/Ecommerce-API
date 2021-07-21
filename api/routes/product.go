@@ -20,7 +20,10 @@ func (u ProductRoutes) Setup() {
 	product := u.handler.Gin.Group("/product")
 	{
 		product.GET("", u.productController.GetAllProducts)
-
+		product.GET("/:id", u.productController.GetProductByID)
+		product.POST("", u.productController.AddProduct)
+		product.POST("/:id", u.productController.UpdateProduct)
+		product.DELETE("/:id", u.productController.DeleteProduct)
 	}
 }
 

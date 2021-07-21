@@ -1,9 +1,9 @@
-FROM golang:1.15
-# install build essentials
-RUN apt-get update && \
-    apt-get install -y wget build-essential pkg-config --no-install-recommends
+FROM golang:alpine
 
-RUN apt-get install -y inotify-tools
+# Required because go requires gcc to build
+RUN apk add build-base
+
+RUN apk add inotify-tools
 
 RUN echo $GOPATH
 

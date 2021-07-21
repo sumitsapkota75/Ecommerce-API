@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `products`(
     `thumbnail` TEXT  NULL,
     `created_at` DATETIME NOT NULL,
     `updated_at` DATETIME NOT NULL,
+    `deleted_at` DATETIME NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`category_id`)
         REFERENCES `categories` (`id`)
