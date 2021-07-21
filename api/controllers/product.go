@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"travel/api/responses"
 	"travel/api/services"
 	"travel/infrastructure"
@@ -50,6 +51,9 @@ func (p ProductController) AddProduct(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadGateway, "Failed to parse product params")
 		return
 	}
+	// Create slug
+	slug_string := strings.Trim(strings.ReplaceAll(strings.ToLower(product.Name), " ", "-"), " ")
+	product.Slug = slug_string
 	if err := p.productService.AddProduct(product); err != nil {
 		p.logger.Zap.Error("Failed to save product", err)
 		responses.ErrorJSON(c, http.StatusBadGateway, "Failed to save product")
