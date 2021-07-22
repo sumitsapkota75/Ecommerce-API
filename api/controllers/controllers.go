@@ -7,4 +7,5 @@ var Module = fx.Options(
 	fx.Provide(NewCategoryController),
 	fx.Provide(NewBrandController),
 	fx.Provide(NewProductController),
+	fx.Provide(NewUtilityController),
 )
