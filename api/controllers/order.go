@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"travel/api/responses"
 	"travel/api/services"
 	"travel/constants"
@@ -55,8 +56,10 @@ func (o OrderController) CreateOrder(c *gin.Context) {
 	if len(order.OrderItem) > 0 {
 		// calculate the total
 		var total_amount float64 = 0
+		var sub_total float64 = 0
 		for _, item := range order.OrderItem {
-			total_amount += float64(item.Price)
+			sub_total = item.Price * float64(item.Quantity)
+			total_amount += sub_total
 		}
 		order.TotalAmount = total_amount
 
@@ -83,4 +86,24 @@ func (o OrderController) CreateOrder(c *gin.Context) {
 	}
 
 	responses.SuccessJSON(c, http.StatusCreated, "Order created successfully")
+}
+
+//GetOrderByID -> returns a order by ID
+func (o OrderController) GetOrderByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		o.logger.Zap.Error("Error retriving id param:", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to retrieve id param")
+		return
+	}
+	orderObj := models.Order{}
+	orderObj.ID = uint(id)
+	order, err := o.orderService.GetOrderByID(orderObj)
+	if err != nil {
+		o.logger.Zap.Error("Can not find order:", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "Can not find order")
+		return
+	}
+	responses.JSON(c, http.StatusOK, order)
 }

@@ -40,3 +40,8 @@ func (o OrderService) CreateOrder(order models.Order) (models.Order, error) {
 func (o OrderService) CreateOrderItem(orderItem models.OrderItem) error {
 	return o.repository.CreateOrderItem(orderItem)
 }
+
+// GetOrderByID -> returns a single order by ID
+func (o OrderService) GetOrderByID(order models.Order) (models.Order, error) {
+	return o.repository.GetOrderByID(order)
+}

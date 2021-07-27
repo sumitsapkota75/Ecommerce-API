@@ -6,6 +6,7 @@ import (
 	"travel/utils"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 //OrderRepository -> struct
@@ -47,6 +48,8 @@ func (c OrderRepository) GetAllOrders(searchParams models.OrderSearchParams, pag
 			c.db.DB.Where("name LIKE ? ", query))
 	}
 	err := queryBuilder.Model(&models.Order{}).
+		Preload("OrderItem.Product").
+		Preload(clause.Associations).
 		Order("updated_at desc").
 		Where(&orders).
 		Find(&orders).
@@ -64,4 +67,9 @@ func (o OrderRepository) CreateOrder(order models.Order) (models.Order, error) {
 // CreateOrderItem -> create order items
 func (o OrderRepository) CreateOrderItem(orderItem models.OrderItem) error {
 	return o.db.DB.Create(&orderItem).Error
+}
+
+// GetOrderByID -> returns a single order
+func (o OrderRepository) GetOrderByID(order models.Order) (models.Order, error) {
+	return order, o.db.DB.Model(&models.Order{}).Preload("OrderItem").Where("id = ?", order.ID).First(&order).Error
 }

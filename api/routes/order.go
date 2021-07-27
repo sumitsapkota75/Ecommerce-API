@@ -22,6 +22,7 @@ func (u OrderRoutes) Setup() {
 	{
 		orders.GET("", u.orderController.GetAllOrders)
 		orders.POST("", u.trxMiddleware.Handle(), u.orderController.CreateOrder)
+		orders.GET("/:id", u.orderController.GetOrderByID)
 
 	}
 }
