@@ -29,6 +29,9 @@ type Product struct {
 	IsActive           int      `json:"is_active"`
 	FeaturedCollection int      `json:"featured_collection"`
 	Thumbnail          string   `json:"thumbnail"`
+	OnSale             int      `json:"on_sale"`
+	SalePrice          string   `json:"sale_price"`
+	SaleTime           string   `json:"sale_time"`
 }
 
 // TableName  -> returns table name of model
