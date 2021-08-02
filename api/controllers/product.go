@@ -17,13 +17,15 @@ import (
 type ProductController struct {
 	logger         infrastructure.Logger
 	productService services.ProductService
+	twilio         utils.Twilio
 }
 
 // NewProductController -> creates new user controller
-func NewProductController(logger infrastructure.Logger, productService services.ProductService, firebaseService services.FirebaseService) ProductController {
+func NewProductController(logger infrastructure.Logger, twilio utils.Twilio, productService services.ProductService, firebaseService services.FirebaseService) ProductController {
 	return ProductController{
 		logger:         logger,
 		productService: productService,
+		twilio:         twilio,
 	}
 }
 
@@ -39,6 +41,9 @@ func (cc ProductController) GetAllProducts(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to get products")
 		return
 	}
+	cc.logger.Zap.Info("---------SENDING SMS---------")
+	cc.twilio.SendSms("+9779813413569", "Send from twilio")
+
 	responses.JSONCount(c, http.StatusOK, products, int(count))
 }
 

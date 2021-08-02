@@ -8,6 +8,7 @@ import (
 	"travel/api/routes"
 	"travel/api/services"
 	"travel/infrastructure"
+	"travel/utils"
 
 	"go.uber.org/fx"
 )
@@ -19,6 +20,7 @@ var Module = fx.Options(
 	repository.Module,
 	middlewares.Module,
 	routes.Module,
+	utils.Module,
 	fx.Invoke(fxmodule),
 )
 
@@ -30,6 +32,7 @@ func fxmodule(
 	env infrastructure.Env,
 	migrations infrastructure.Migrations,
 	database infrastructure.Database,
+	twilio utils.Twilio,
 
 ) {
 	conn, _ := database.DB.DB()
