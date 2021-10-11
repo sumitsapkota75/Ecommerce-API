@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"travel/api/responses"
@@ -28,11 +29,14 @@ func NewAuthMiddleware(firebaseService services.FirebaseService) AuthMiddleware 
 func (m AuthMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := m.getTokenFromHeader(c)
+
 		if err != nil {
 			responses.ErrorJSON(c, http.StatusUnauthorized, err.Error())
 			c.Abort()
 			return
 		}
+
+		fmt.Println("TOKEN:::::", token.Claims)
 		c.Set(constants.UID, token.UID)
 		c.Next()
 	}

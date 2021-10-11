@@ -20,7 +20,7 @@ func (u OrderRoutes) Setup() {
 	u.logger.Zap.Info(" Setting up order routes 👤 -------------")
 	orders := u.handler.Gin.Group("/order")
 	{
-		orders.GET("", u.orderController.GetAllOrders)
+		orders.GET("", u.authMiddleware.Handle(), u.orderController.GetAllOrders)
 		orders.POST("", u.trxMiddleware.Handle(), u.orderController.CreateOrder)
 		orders.GET("/:id", u.orderController.GetOrderByID)
 

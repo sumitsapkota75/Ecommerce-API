@@ -61,7 +61,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, requestUser.UserType)
+	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, constants.CustomerUserType)
 	if firebaseErr != nil {
 		u.logger.Zap.Error("Error [create firebase user] ::", firebaseErr)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error creating user in firebase")
@@ -74,7 +74,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 	user.Phone = requestUser.Phone
 	user.Email = requestUser.Email
 	user.Name = requestUser.Name
-	user.UserType = requestUser.UserType
+	user.UserType = constants.CustomerUserType
 	_, err := u.userService.CreateUser(user)
 	if err != nil {
 		u.logger.Zap.Error("Error [db CreateUser]: ", err.Error())

@@ -55,7 +55,7 @@ func (fb *FirebaseService) CreateUser(email, password, username, role string) (s
 	}
 
 	// Adding claims as staff
-	claims := map[string]interface{}{"role": "user"}
+	claims := map[string]interface{}{"role": role}
 	err = fb.Firebase.SetCustomUserClaims(context.Background(), u.UID, claims)
 	if err != nil {
 		return "Internal Server Error", err
