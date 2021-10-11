@@ -3,7 +3,7 @@ package models
 // User -> Model
 
 type User struct {
-	Base
+	UserBase
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	UserType string `json:"user_type,omitempty"`
@@ -15,10 +15,3 @@ type User struct {
 func (u User) TableName() string {
 	return "users"
 }
-
-//BeforeCreate -> Called before inserting record into Column Table
-// func (u *User) BeforeCreate(db *gorm.DB) error {
-// 	id, err := uuid.NewRandom()
-// 	u.ID = BINARY16(id)
-// 	return err
-// }

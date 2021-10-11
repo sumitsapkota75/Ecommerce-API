@@ -112,13 +112,13 @@ func (cc BrandController) UpdateBrand(c *gin.Context) {
 func (cc BrandController) DeleteBrand(c *gin.Context) {
 	var brand models.Brand
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := models.StringToBinary16(idParam)
 	if err != nil {
 		cc.logger.Zap.Error("Error retriving id param:", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to retrieve id param")
 		return
 	}
-	brand.ID = uint(id)
+	brand.ID = id
 	if err := cc.brandService.DeleteBrand(brand); err != nil {
 		cc.logger.Zap.Error("Failed to delete brand:", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to delete brand:")

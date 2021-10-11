@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewBrandController),
 	fx.Provide(NewProductController),
 	fx.Provide(NewOrderController),
+	fx.Provide(NewVendorController),
 )

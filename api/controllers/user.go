@@ -17,14 +17,16 @@ type UserController struct {
 	logger          infrastructure.Logger
 	userService     services.UserService
 	firebaseService services.FirebaseService
+	vendorService   services.VendorService
 }
 
 // NewUserController -> creates new user controller
-func NewUserController(logger infrastructure.Logger, userService services.UserService, firebaseService services.FirebaseService) UserController {
+func NewUserController(logger infrastructure.Logger, userService services.UserService, firebaseService services.FirebaseService, vendorService services.VendorService) UserController {
 	return UserController{
 		logger:          logger,
 		userService:     userService,
 		firebaseService: firebaseService,
+		vendorService:   vendorService,
 	}
 }
 
@@ -58,26 +60,28 @@ func (u UserController) CreateUser(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadRequest, "The provided email is already in use")
 		return
 	}
-	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, constants.CustomerUserType)
+
+	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, requestUser.UserType)
 	if firebaseErr != nil {
 		u.logger.Zap.Error("Error [create firebase user] ::", firebaseErr)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error creating user in firebase")
 		return
 	}
+
 	var user models.User
 	user.ID = firebaseID
 	user.Address = requestUser.Address
 	user.Phone = requestUser.Phone
 	user.Email = requestUser.Email
 	user.Name = requestUser.Name
-	user.UserType = constants.CustomerUserType
+	user.UserType = requestUser.UserType
 	_, err := u.userService.CreateUser(user)
 	if err != nil {
 		u.logger.Zap.Error("Error [db CreateUser]: ", err.Error())
 		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to Save User in Database")
 		return
 	}
-	responses.SuccessJSON(c, http.StatusOK, "User created successfully")
+	responses.SuccessJSON(c, http.StatusCreated, "User created successfully")
 
 }
 
@@ -93,7 +97,7 @@ func (u UserController) GetUserProfile(c *gin.Context) {
 	responses.JSON(c, http.StatusOK, user)
 }
 
-//UpdateUser
+// UpdateUser
 func (u UserController) UpdateUser(c *gin.Context) {
 	uid := c.MustGet(constants.UID).(string)
 	requestUser := struct {

@@ -4,7 +4,7 @@ import "time"
 
 // Base -> base struct
 type Base struct {
-	ID        string    `json:"id"`
+	ID        BINARY16  `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -12,6 +12,13 @@ type Base struct {
 // UintBase -> base struct
 type UintBase struct {
 	ID        uint      `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// UintBase -> base struct
+type UserBase struct {
+	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

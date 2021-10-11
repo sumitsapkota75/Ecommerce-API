@@ -8,4 +8,5 @@ var Module = fx.Options(
 	fx.Provide(NewBrandRepository),
 	fx.Provide(NewProductRepository),
 	fx.Provide(NewOrderRepository),
+	fx.Provide(NewVendorRepository),
 )

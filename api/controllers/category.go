@@ -112,13 +112,13 @@ func (cc CategoryController) UpdateCategory(c *gin.Context) {
 func (cc CategoryController) DeleteCategory(c *gin.Context) {
 	var category models.Category
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	id, err := models.StringToBinary16(idParam)
 	if err != nil {
 		cc.logger.Zap.Error("Error retriving id param:", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to retrieve id param")
 		return
 	}
-	category.ID = uint(id)
+	category.ID = id
 	if err := cc.categoryService.DeleteCategory(category); err != nil {
 		cc.logger.Zap.Error("Failed to delete category:", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to delete category:")

@@ -4,8 +4,11 @@ const (
 	// AdminUserType Usertype
 	AdminUserType string = "admin"
 
-	// ClientUserType Usertype
+	// CustomerUserType Usertype
 	CustomerUserType string = "customer"
+
+	// VendorUserType Usertype
+	VendorUserType string = "vendor"
 
 	// UnregisteredUserType Usertype
 	UnregisteredUserType string = "unregistered"

@@ -1,5 +1,10 @@
 package models
 
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
 //ProductSearchParams -> search Product Params
 type ProductSearchParams struct {
 	Keyword string `json:"keyword"`
@@ -7,11 +12,12 @@ type ProductSearchParams struct {
 
 //Product -> model
 type Product struct {
-	UintBase
+	Base
+	Vendor
 	Name               string   `json:"name"`
-	CategoryID         uint     `json:"category_id"`
+	CategoryID         BINARY16 `json:"category_id"`
 	Category           Category `json:"category"`
-	BrandID            uint     `json:"brand_id"`
+	BrandID            BINARY16 `json:"brand_id"`
 	Brand              Brand    `json:"brand"`
 	CostPrice          string   `json:"cost_price"`
 	Price              string   `json:"price"`
@@ -37,4 +43,11 @@ type Product struct {
 // TableName  -> returns table name of model
 func (p Product) TableName() string {
 	return "products"
+}
+
+// BeforeCreate -> Called before inserting record into Column Table
+func (u *Product) BeforeCreate(db *gorm.DB) error {
+	id, err := uuid.NewRandom()
+	u.ID = BINARY16(id)
+	return err
 }
