@@ -17,7 +17,6 @@ import (
 type ProductController struct {
 	logger         infrastructure.Logger
 	productService services.ProductService
-	twilio         utils.Twilio
 }
 
 // NewProductController -> creates new user controller
@@ -25,7 +24,6 @@ func NewProductController(logger infrastructure.Logger, twilio utils.Twilio, pro
 	return ProductController{
 		logger:         logger,
 		productService: productService,
-		twilio:         twilio,
 	}
 }
 
@@ -41,8 +39,6 @@ func (cc ProductController) GetAllProducts(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to get products")
 		return
 	}
-	cc.logger.Zap.Info("---------SENDING SMS---------")
-	cc.twilio.SendSms("+9779813413569", "Send from twilio")
 
 	responses.JSONCount(c, http.StatusOK, products, int(count))
 }
@@ -60,7 +56,7 @@ func (p ProductController) AddProduct(c *gin.Context) {
 	slug_string := strings.Trim(strings.ReplaceAll(strings.ToLower(product.Name), " ", "-"), " ")
 	product.Slug = slug_string
 	if err := p.productService.AddProduct(product); err != nil {
-		p.logger.Zap.Error("Failed to save product", err)
+		p.logger.Zap.Error("Failed to save product", err.Error())
 		responses.ErrorJSON(c, http.StatusBadGateway, "Failed to save product")
 		return
 	}
@@ -70,13 +66,8 @@ func (p ProductController) AddProduct(c *gin.Context) {
 // GetProductById -> gets a product by ID
 func (p ProductController) GetProductByID(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
-	if err != nil {
-		p.logger.Zap.Error("Error retriving id param:", err)
-		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to retrieve id param")
-		return
-	}
-	product, err := p.productService.GetProductByID(id)
+
+	product, err := p.productService.GetProductByID(idParam)
 	if err != nil {
 		p.logger.Zap.Error("Can not find product:", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Can not find product")
@@ -89,14 +80,8 @@ func (p ProductController) GetProductByID(c *gin.Context) {
 func (p ProductController) UpdateProduct(c *gin.Context) {
 	var newProduct models.Product
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
 
-	if err != nil {
-		p.logger.Zap.Error("Error retriving id param:", err)
-		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to retrieve id param")
-		return
-	}
-	product, err := p.productService.GetProductByID(id)
+	product, err := p.productService.GetProductByID(idParam)
 	if err != nil {
 		p.logger.Zap.Error("Error [UpdateProduct] [GetOneProduct] :: ", err.Error())
 		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to find Product")

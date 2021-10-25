@@ -1,1 +1,0 @@
-ALTER TABLE `vendors` DROP  `vendor`;

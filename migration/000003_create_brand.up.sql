@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `brands` (
-    `id` INT NOT NULL AUTO_INCREMENT,
+    `id` BINARY(16) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `thumbnail` VARCHAR(255) NULL,
     `description` VARCHAR(255) NOT NULL,

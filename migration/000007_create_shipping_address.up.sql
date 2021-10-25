@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `shipping_addresses`(
-    `id` INT NOT NULL AUTO_INCREMENT,
+    `id` BINARY(16) NOT NULL,
     `user_id` VARCHAR(32) NOT NULL,
     `district`  VARCHAR(255)  NOT NULL,
     `address` TEXT NULL,

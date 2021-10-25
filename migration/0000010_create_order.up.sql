@@ -1,5 +1,7 @@
 CREATE TABLE  IF NOT EXISTS `orders`(
-    `id` INT NOT NULL AUTO_INCREMENT,
+    `id` BINARY(16) NOT NULL,
+    `user_id` VARCHAR(32) NOT NULL,
+    `vendor_id` VARCHAR(32) NOT NULL,
     `first_name` VARCHAR(255) NOT NULL,
     `last_name` VARCHAR(255) NOT NULL,
     `company_name` VARCHAR(255) NULL,
@@ -15,5 +17,9 @@ CREATE TABLE  IF NOT EXISTS `orders`(
     `created_at` DATETIME NOT NULL,
     `updated_at` DATETIME NOT NULL,
     `deleted_at` DATETIME  NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`vendor_id`)
+        REFERENCES `vendors` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 )ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;

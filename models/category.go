@@ -5,12 +5,12 @@ import (
 	"gorm.io/gorm"
 )
 
-//CategorySearchParams -> search Category Params
+// CategorySearchParams -> search Category Params
 type CategorySearchParams struct {
 	Keyword string `json:"keyword"`
 }
 
-//Category -> category model
+// Category -> category model
 type Category struct {
 	Base
 	Name        string `json:"name"`

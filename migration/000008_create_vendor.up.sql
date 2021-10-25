@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `vendors` (
     `document_id` VARCHAR(200) NOT NULL,
     `phone` VARCHAR(10) NOT NULL,
     `thumbnail` VARCHAR(300) NULL,
-    `is_active` INT NOT NUll,
+    `is_active` INT NOT NUll DEFAULT 0,
     `created_at` DATETIME NOT NULL,
     `updated_at` DATETIME NOT NULL,
     PRIMARY KEY (`id`)

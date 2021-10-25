@@ -12,6 +12,7 @@ type Vendor struct {
 	Phone        string `json:"phone"`
 	Address      string `json:"address"`
 	Thumbnail    string `json:"thumbnail"`
+	IsActive     int    `json:"is_active"`
 }
 
 // TableName  -> returns table name of model

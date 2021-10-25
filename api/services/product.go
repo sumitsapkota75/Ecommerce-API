@@ -29,7 +29,7 @@ func (p ProductService) AddProduct(product models.Product) error {
 }
 
 // GetProductById -> returns a single id
-func (p ProductService) GetProductByID(productId int) (models.Product, error) {
+func (p ProductService) GetProductByID(productId string) (models.Product, error) {
 	return p.repository.GetProductByID(productId)
 }
 

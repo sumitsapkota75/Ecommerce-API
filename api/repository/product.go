@@ -49,6 +49,7 @@ func (p ProductRepository) GetAllProducts(searchParams models.ProductSearchParam
 	err := queryBuilder.Model(&models.Product{}).
 		Preload("Category").
 		Preload("Brand").
+		Preload("Vendor").
 		Order("updated_at desc").
 		Where(&products).
 		Find(&products).
@@ -64,7 +65,7 @@ func (p ProductRepository) AddProduct(product models.Product) error {
 }
 
 // GetProductByID -> gets a product by ID
-func (p ProductRepository) GetProductByID(productID int) (product models.Product, err error) {
+func (p ProductRepository) GetProductByID(productID string) (product models.Product, err error) {
 	return product, p.db.DB.Model(&models.Product{}).Preload("Category").Preload("Brand").Where("id = ?", productID).First(&product).Error
 }
 

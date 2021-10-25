@@ -46,11 +46,18 @@ func (u UserController) GetAllUsers(c *gin.Context) {
 func (u UserController) CreateUser(c *gin.Context) {
 	requestUser := struct {
 		models.User
-		Password string `json:"password"`
+		Password1 string `json:"password1"`
+		Password2 string `json:"password2"`
 	}{}
 	if err := c.ShouldBindJSON(&requestUser); err != nil {
 		u.logger.Zap.Error("Error (ShouldBindJSON) ::", err.Error())
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error parsing json request")
+		return
+	}
+	// check if two passwords match
+	if requestUser.Password1 != requestUser.Password2 {
+		u.logger.Zap.Error("Error [two passwords do not match] ::")
+		responses.ErrorJSON(c, http.StatusBadRequest, "two passwords do not match")
 		return
 	}
 	// Checks for firebase existing user
@@ -61,7 +68,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, constants.CustomerUserType)
+	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password1, requestUser.Name, constants.CustomerUserType)
 	if firebaseErr != nil {
 		u.logger.Zap.Error("Error [create firebase user] ::", firebaseErr)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error creating user in firebase")

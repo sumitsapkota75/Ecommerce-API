@@ -47,7 +47,7 @@ func (v VendorController) CreateVendor(c *gin.Context) {
 		Password string `json:"password"`
 	}{}
 	if err := c.ShouldBindJSON(&requestVendor); err != nil {
-		v.logger.Zap.Error("Error [create vendor ] ::")
+		v.logger.Zap.Error("Error [create vendor ] ::", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to bind vendors json data")
 		return
 	}
@@ -76,7 +76,7 @@ func (v VendorController) CreateVendor(c *gin.Context) {
 	vendor.DocumentType = requestVendor.DocumentType
 	vendorData, err := v.vendorService.CreateVendor(vendor)
 	if err != nil {
-		v.logger.Zap.Error("Error [create vendor ] ::")
+		v.logger.Zap.Error("Error [create vendor ] ::", err)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to save vendor")
 		return
 	}
