@@ -55,6 +55,32 @@ func (p ProductController) AddProduct(c *gin.Context) {
 	// Create slug
 	slug_string := strings.Trim(strings.ReplaceAll(strings.ToLower(product.Name), " ", "-"), " ")
 	product.Slug = slug_string
+	// test for duplicate slug
+	// pagination := utils.BuildPagination(c)
+	// pagination.All = true
+	// allProducts, count, error := p.productService.GetAllProducts(models.ProductSearchParams{}, pagination)
+	// if error != nil {
+	// 	p.logger.Zap.Error("Failed to fetch all products", error.Error())
+	// 	responses.ErrorJSON(c, http.StatusBadGateway, "Failed to fetch all product")
+	// 	return
+	// }
+	// if count != 0 {
+	// 	for _, item := range allProducts {
+	// 		if item.Slug == slug_string {
+	// 			old_slug_count := item.Slug[len(item.Slug)-1:]
+	// 			old_slug_count_int, err := strconv.Atoi(old_slug_count)
+	// 			// only one product with same slug exists with out tail number
+	// 			if err != nil {
+	// 				product.Slug = item.Slug + strconv.Itoa(1)
+	// 			} else {
+	// 				new_slug_count := old_slug_count_int + 1
+	// 				new_slug := item.Slug + strconv.Itoa(new_slug_count)
+	// 				product.Slug = new_slug
+	// 			}
+	// 		}
+
+	// 	}
+	// }
 	if err := p.productService.AddProduct(product); err != nil {
 		p.logger.Zap.Error("Failed to save product", err.Error())
 		responses.ErrorJSON(c, http.StatusBadGateway, "Failed to save product")
@@ -66,7 +92,6 @@ func (p ProductController) AddProduct(c *gin.Context) {
 // GetProductById -> gets a product by ID
 func (p ProductController) GetProductByID(c *gin.Context) {
 	idParam := c.Param("id")
-
 	product, err := p.productService.GetProductByID(idParam)
 	if err != nil {
 		p.logger.Zap.Error("Can not find product:", err)

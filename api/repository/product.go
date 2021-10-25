@@ -66,7 +66,7 @@ func (p ProductRepository) AddProduct(product models.Product) error {
 
 // GetProductByID -> gets a product by ID
 func (p ProductRepository) GetProductByID(productID string) (product models.Product, err error) {
-	return product, p.db.DB.Model(&models.Product{}).Preload("Category").Preload("Brand").Where("id = ?", productID).First(&product).Error
+	return product, p.db.DB.Model(&models.Product{}).Preload("Category").Preload("Brand").Where("slug = ?", productID).First(&product).Error
 }
 
 // UpdateProduct -> updates the product
