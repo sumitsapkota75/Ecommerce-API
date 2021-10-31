@@ -36,7 +36,7 @@ func (m AuthMiddleware) Handle() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("TOKEN:::::", token.Claims)
+		fmt.Println("TOKEN:::::", token.UID)
 		c.Set(constants.UID, token.UID)
 		c.Next()
 	}

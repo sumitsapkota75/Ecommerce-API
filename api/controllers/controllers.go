@@ -9,4 +9,5 @@ var Module = fx.Options(
 	fx.Provide(NewProductController),
 	fx.Provide(NewOrderController),
 	fx.Provide(NewVendorController),
+	fx.Provide(NewShippingAddressController),
 )

@@ -105,7 +105,6 @@ func (p ProductController) GetProductByID(c *gin.Context) {
 func (p ProductController) UpdateProduct(c *gin.Context) {
 	var newProduct models.Product
 	idParam := c.Param("id")
-
 	product, err := p.productService.GetProductByID(idParam)
 	if err != nil {
 		p.logger.Zap.Error("Error [UpdateProduct] [GetOneProduct] :: ", err.Error())
