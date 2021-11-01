@@ -20,7 +20,7 @@ type ProductController struct {
 }
 
 // NewProductController -> creates new user controller
-func NewProductController(logger infrastructure.Logger, twilio utils.Twilio, productService services.ProductService, firebaseService services.FirebaseService) ProductController {
+func NewProductController(logger infrastructure.Logger, productService services.ProductService, firebaseService services.FirebaseService) ProductController {
 	return ProductController{
 		logger:         logger,
 		productService: productService,

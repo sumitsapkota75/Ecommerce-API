@@ -23,9 +23,9 @@ type Env struct {
 	AdminURI          string
 	ClientURI         string
 	StripeKey         string
-	TWILIO_SID        string
-	TWILIO_authToken  string
-	TWILIO_FROM       string
+	SMTPHost          string
+	SMTPPort          string
+	SMTPPassword      string
 }
 
 // NewEnv creates a new environment
@@ -55,7 +55,7 @@ func (env *Env) LoadEnv() {
 	env.AdminURI = os.Getenv("AdminURI")
 	env.ClientURI = os.Getenv("ClientURI")
 	env.StripeKey = os.Getenv("StripeKey")
-	env.TWILIO_SID = os.Getenv("TWILIO_SID")
-	env.TWILIO_authToken = os.Getenv("TWILIO_authToken")
-	env.TWILIO_FROM = os.Getenv("TWILIO_FROM")
+	env.SMTPHost = os.Getenv("SMTPHost")
+	env.SMTPPort = os.Getenv("SMTPPort")
+	env.SMTPPassword = os.Getenv("SMTPPassword")
 }

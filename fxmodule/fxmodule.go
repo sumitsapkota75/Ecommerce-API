@@ -32,7 +32,6 @@ func fxmodule(
 	env infrastructure.Env,
 	migrations infrastructure.Migrations,
 	database infrastructure.Database,
-	twilio utils.Twilio,
 
 ) {
 	conn, _ := database.DB.DB()

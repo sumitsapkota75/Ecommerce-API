@@ -11,4 +11,5 @@ var Module = fx.Options(
 	fx.Provide(NewOrderService),
 	fx.Provide(NewVendorService),
 	fx.Provide(NewShippingAddressService),
+	fx.Provide(NewSMTPService),
 )

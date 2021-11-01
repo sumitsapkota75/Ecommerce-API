@@ -5,6 +5,4 @@ import (
 )
 
 // Module Middleware exported
-var Module = fx.Options(
-	fx.Provide(NewTwilio),
-)
+var Module = fx.Options()

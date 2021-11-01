@@ -18,15 +18,17 @@ type UserController struct {
 	userService     services.UserService
 	firebaseService services.FirebaseService
 	vendorService   services.VendorService
+	smtp            services.SMTPService
 }
 
 // NewUserController -> creates new user controller
-func NewUserController(logger infrastructure.Logger, userService services.UserService, firebaseService services.FirebaseService, vendorService services.VendorService) UserController {
+func NewUserController(logger infrastructure.Logger, userService services.UserService, firebaseService services.FirebaseService, vendorService services.VendorService, smtp services.SMTPService) UserController {
 	return UserController{
 		logger:          logger,
 		userService:     userService,
 		firebaseService: firebaseService,
 		vendorService:   vendorService,
+		smtp:            smtp,
 	}
 }
 
@@ -54,6 +56,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error parsing json request")
 		return
 	}
+
 	// check if two passwords match
 	if requestUser.Password1 != requestUser.Password2 {
 		u.logger.Zap.Error("Error [two passwords do not match] ::")
@@ -86,6 +89,30 @@ func (u UserController) CreateUser(c *gin.Context) {
 	if err != nil {
 		u.logger.Zap.Error("Error [db CreateUser]: ", err.Error())
 		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to Save User in Database")
+		return
+	}
+
+	// Send Email for the user verification
+	var emailSubject models.EmailSubject
+	emailSubject.Title = "User Verification Link"
+
+	var emailBody models.EmailBody
+	emailBody.ToName = user.Name
+	emailBody.Name = user.Name
+	emailBody.Title = "Verify Email"
+	// email param
+	var emailParam models.EmailParams
+	emailParam.SubjectTemplate = "email_verification_subject.txt"
+	emailParam.SubjectData = emailSubject
+	emailParam.From = "sumitsapkota0@gmail.com"
+	emailParam.To = "murmastore@gmail.com"
+	emailParam.BodyTemplate = "email_verification_body.txt"
+	emailParam.BodyData = emailBody
+	// Send the message
+	_, err = u.smtp.SendMail(emailParam)
+	if err != nil {
+		u.logger.Zap.Error("Error [sending email]: ", err.Error())
+		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to send email")
 		return
 	}
 	responses.SuccessJSON(c, http.StatusCreated, "User created successfully")

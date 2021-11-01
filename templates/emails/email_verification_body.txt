@@ -1,0 +1,10 @@
+Hello, {{.Name}}
+
+Click the link below to verify your email address
+VerificationLink
+
+
+From Murmastore
+-------------------------
+Thank you for being a murma family.
+https://murmastore.com
