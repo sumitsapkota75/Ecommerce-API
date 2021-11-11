@@ -81,6 +81,7 @@ func (p ProductController) AddProduct(c *gin.Context) {
 
 	// 	}
 	// }
+	p.logger.Zap.Info("PRODUCT", product)
 	if err := p.productService.AddProduct(product); err != nil {
 		p.logger.Zap.Error("Failed to save product", err.Error())
 		responses.ErrorJSON(c, http.StatusBadGateway, "Failed to save product")

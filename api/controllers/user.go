@@ -48,8 +48,7 @@ func (u UserController) GetAllUsers(c *gin.Context) {
 func (u UserController) CreateUser(c *gin.Context) {
 	requestUser := struct {
 		models.User
-		Password1 string `json:"password1"`
-		Password2 string `json:"password2"`
+		Password string `json:"password"`
 	}{}
 	if err := c.ShouldBindJSON(&requestUser); err != nil {
 		u.logger.Zap.Error("Error (ShouldBindJSON) ::", err.Error())
@@ -57,12 +56,6 @@ func (u UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	// check if two passwords match
-	if requestUser.Password1 != requestUser.Password2 {
-		u.logger.Zap.Error("Error [two passwords do not match] ::")
-		responses.ErrorJSON(c, http.StatusBadRequest, "two passwords do not match")
-		return
-	}
 	// Checks for firebase existing user
 	firebaseID := u.firebaseService.GetUserByEmail(requestUser.Email)
 	if firebaseID != "" {
@@ -71,7 +64,7 @@ func (u UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password1, requestUser.Name, constants.CustomerUserType)
+	firebaseID, firebaseErr := u.firebaseService.CreateUser(requestUser.Email, requestUser.Password, requestUser.Name, constants.CustomerUserType)
 	if firebaseErr != nil {
 		u.logger.Zap.Error("Error [create firebase user] ::", firebaseErr)
 		responses.ErrorJSON(c, http.StatusBadRequest, "Error creating user in firebase")
@@ -91,7 +84,8 @@ func (u UserController) CreateUser(c *gin.Context) {
 		responses.ErrorJSON(c, http.StatusInternalServerError, "failed to Save User in Database")
 		return
 	}
-
+	link, _ := u.firebaseService.GenerateEmailVerificationLink(user.Email)
+	u.logger.Zap.Info(" [LINK]: ", link)
 	// Send Email for the user verification
 	var emailSubject models.EmailSubject
 	emailSubject.Title = "User Verification Link"
@@ -100,12 +94,13 @@ func (u UserController) CreateUser(c *gin.Context) {
 	emailBody.ToName = user.Name
 	emailBody.Name = user.Name
 	emailBody.Title = "Verify Email"
+	emailBody.URL = link
 	// email param
 	var emailParam models.EmailParams
 	emailParam.SubjectTemplate = "email_verification_subject.txt"
 	emailParam.SubjectData = emailSubject
 	emailParam.From = "sumitsapkota0@gmail.com"
-	emailParam.To = "murmastore@gmail.com"
+	emailParam.To = user.Email
 	emailParam.BodyTemplate = "email_verification_body.txt"
 	emailParam.BodyData = emailBody
 	// Send the message

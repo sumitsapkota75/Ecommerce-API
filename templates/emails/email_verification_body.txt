@@ -1,7 +1,7 @@
 Hello, {{.Name}}
 
 Click the link below to verify your email address
-VerificationLink
+{{.URL}}
 
 
 From Murmastore

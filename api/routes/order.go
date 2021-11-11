@@ -18,11 +18,12 @@ type OrderRoutes struct {
 // Setup category Routes
 func (u OrderRoutes) Setup() {
 	u.logger.Zap.Info(" Setting up order routes 👤 -------------")
-	orders := u.handler.Gin.Group("/order")
+	orders := u.handler.Gin.Group("/order").Use(u.authMiddleware.Handle())
 	{
 		orders.GET("", u.orderController.GetAllOrders)
 		orders.POST("", u.trxMiddleware.Handle(), u.orderController.CreateOrder)
 		orders.GET("/:id", u.orderController.GetOrderByID)
+		orders.GET("/my-order", u.orderController.GetAllOrderByCustomer)
 
 	}
 }

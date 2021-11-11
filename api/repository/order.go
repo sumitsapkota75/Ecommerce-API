@@ -59,6 +59,33 @@ func (c OrderRepository) GetAllOrders(searchParams models.OrderSearchParams, pag
 	return orders, count, err
 }
 
+// GetAllOrderByCustomer -> returns all orders of a customer
+func (c OrderRepository) GetAllOrderByCustomer(customer models.User, searchParams models.OrderSearchParams, pagination utils.Pagination) ([]models.Order, int64, error) {
+	var orders []models.Order
+	var count int64
+
+	queryBuilder := c.db.DB.Limit(pagination.PageSize).Offset(pagination.Offset)
+	if pagination.All {
+		queryBuilder = c.db.DB
+	}
+	if searchParams.Keyword != "" {
+		query := "%" + searchParams.Keyword + "%"
+		queryBuilder = queryBuilder.Where(
+			c.db.DB.Where("name LIKE ? ", query))
+	}
+	err := queryBuilder.Model(&models.Order{}).
+		Preload("OrderItem.Product").
+		Preload(clause.Associations).
+		Order("updated_at desc").
+		Where("user_id = ?", customer.ID).
+		Where(&orders).
+		Find(&orders).
+		Offset(-1).
+		Limit(-1).
+		Count(&count).Error
+	return orders, count, err
+}
+
 // CreateOrder -> creates a new order
 func (o OrderRepository) CreateOrder(order models.Order) (models.Order, error) {
 	return order, o.db.DB.Omit("OrderItem").Create(&order).Error

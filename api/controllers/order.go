@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 	"travel/api/responses"
 	"travel/api/services"
 	"travel/constants"
@@ -43,10 +42,31 @@ func (cc OrderController) GetAllOrders(c *gin.Context) {
 	responses.JSONCount(c, http.StatusOK, orders, int(count))
 }
 
+// GetAllOrderByCustomer
+func (cc OrderController) GetAllOrderByCustomer(c *gin.Context) {
+	pagination := utils.BuildPagination(c)
+	var user models.User
+	uid := c.MustGet(constants.UID).(string)
+	user.ID = uid
+	searchParams := models.OrderSearchParams{
+		Keyword: c.Query("keyword"),
+	}
+	orders, count, err := cc.orderService.GetAllOrderByCustomer(user, searchParams, pagination)
+	if err != nil {
+		cc.logger.Zap.Error("Failed to get orders::", err)
+		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to get orders")
+		return
+	}
+	responses.JSONCount(c, http.StatusOK, orders, int(count))
+}
+
 // CreateOrder -> create a new order controller
 func (o OrderController) CreateOrder(c *gin.Context) {
 	var order models.Order
+	uid := c.MustGet(constants.UID).(string)
+	order.UserID = uid
 	trx := c.MustGet(constants.DBTransaction).(*gorm.DB)
+
 	if err := c.ShouldBindJSON(&order); err != nil {
 		o.logger.Zap.Error("Failed to bind order json data::", err.Error())
 		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to parse json data")
@@ -62,7 +82,6 @@ func (o OrderController) CreateOrder(c *gin.Context) {
 			total_amount += sub_total
 		}
 		order.TotalAmount = total_amount
-
 		orderObj, err := o.orderService.CreateOrder(order)
 		if err != nil {
 			o.logger.Zap.Error("Failed to create order ::", err.Error())
@@ -71,7 +90,7 @@ func (o OrderController) CreateOrder(c *gin.Context) {
 		}
 
 		for _, orderItem := range order.OrderItem {
-			orderItem.OrderID = int(orderObj.ID)
+			orderItem.OrderID = orderObj.ID
 			err = o.orderService.WithTrx(trx).CreateOrderItem(orderItem)
 			if err != nil {
 				o.logger.Zap.Error("Error [CreateOrderItemService] ::", err.Error())
@@ -91,14 +110,15 @@ func (o OrderController) CreateOrder(c *gin.Context) {
 //GetOrderByID -> returns a order by ID
 func (o OrderController) GetOrderByID(c *gin.Context) {
 	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	o.logger.Zap.Error("IDPARAM[dddd]", idParam)
+	id, err := models.StringToBinary16(idParam)
 	if err != nil {
-		o.logger.Zap.Error("Error retriving id param:", err)
-		responses.ErrorJSON(c, http.StatusBadRequest, "Failed to retrieve id param")
+		o.logger.Zap.Error("Failed to convert id to binary 16 :: ", err.Error())
+		responses.ErrorJSON(c, http.StatusInternalServerError, "Failed to convert id to binary 16 ")
 		return
 	}
 	orderObj := models.Order{}
-	orderObj.ID = uint(id)
+	orderObj.ID = id
 	order, err := o.orderService.GetOrderByID(orderObj)
 	if err != nil {
 		o.logger.Zap.Error("Can not find order:", err)

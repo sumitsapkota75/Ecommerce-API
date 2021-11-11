@@ -26,6 +26,11 @@ func (c OrderService) WithTrx(trxHandle *gorm.DB) OrderService {
 	return c
 }
 
+// GetAllOrderByCustomer -> returns all orders
+func (c OrderService) GetAllOrderByCustomer(user models.User, searchParams models.OrderSearchParams, pagination utils.Pagination) ([]models.Order, int64, error) {
+	return c.repository.GetAllOrderByCustomer(user, searchParams, pagination)
+}
+
 // GetAllOrder -> returns all orders
 func (c OrderService) GetAllOrders(searchParams models.OrderSearchParams, pagination utils.Pagination) ([]models.Order, int64, error) {
 	return c.repository.GetAllOrders(searchParams, pagination)
