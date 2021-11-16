@@ -8,9 +8,9 @@ jobs:
     - name: checkout code
       uses: actions/checkout@v2
 
-    - name: Prepare build environment
-      run: |
-          go build -v ./...
+    - name: Prepare build environment  
+    - run: go build -v ./... 
+    - run: |
           for i in `seq 1 30`;
           do
             nc -z 127.0.0.1 3306 && echo Success && exit 0
