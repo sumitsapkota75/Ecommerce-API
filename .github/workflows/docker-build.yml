@@ -9,15 +9,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Prepare build environment
-        run: |                                    # multiple Bash commands follow
-          mkdir -p build
-          touch build/.nojekyll
-        run: |
-            for i in `seq 1 30`;
-            do
-              nc -z 127.0.0.1 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
-        
+      run: go build -v ./...
+      run: |
+          for i in `seq 1 30`;
+          do
+            nc -z 127.0.0.1 3306 && echo Success && exit 0
+            echo -n .
+            sleep 1
+          done
+          echo Failed waiting for MySQL && exit 1
