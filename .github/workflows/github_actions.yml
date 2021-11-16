@@ -1,0 +1,40 @@
+
+name: github-actions
+on: [push]
+jobs:
+  general-ci-cd:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Starting CICD with gihub actions...
+      uses: act10ns/slack@v1
+      with:
+          status: starting
+          channel: '#github_actions'
+          message: Starting CICD Build and Push...
+      if: always()
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: github_actions
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    
+    - name: checkout code
+      uses: actions/checkout@v2
+
+    - name : Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17 # The Go version to download (if necessary) and use.
+    
+    - name: Build
+      run: go build -v ./... 
+
+    - name: CICD Results
+      uses: act10ns/slack@v1
+      with:
+        status: ${{ job.status }}
+        steps: ${{ toJson(steps) }}
+        channel: '#github_actions'
+      if: always()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
