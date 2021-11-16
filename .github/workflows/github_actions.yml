@@ -10,7 +10,8 @@ jobs:
       with:
           status: starting
           channel: '#github_actions'
-          message: Starting CICD Build and Push...
+          message: Starting CICD Build and Push.for ${{github.event.head_commit.message}}..
+          
       if: always()
       env:
         VALIDATE_ALL_CODEBASE: false
