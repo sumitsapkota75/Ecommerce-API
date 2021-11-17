@@ -18,9 +18,9 @@ jobs:
         echo "{
           \"type\": \"$TYPE_SERVICE_ACCOUNT_KEY\", \"project_id\": \"$PROJECT_ID_SERVICE_ACCOUNT_KEY\", \"private_key_id\": \"$PRIVATE_KEY_ID_SERVICE_ACCOUNT_KEY\",\"private_key\": \"$PRIVATE_KEY_SERVICE_ACCOUNT_KEY\",\"client_email\": \"$CLIENT_EMAIL_SERVICE_ACCOUNT_KEY\",\"client_id\": \"$CLIENT_ID_SERVICE_ACCOUNT_KEY\",\"auth_uri\": \"$AUTH_URL_SERVICE_ACCOUNT_KEY\",\"token_uri\": \"$TOKEN_URI_SERVICE_ACCOUNT_KEY\",\"auth_provider_x509_cert_url\": \"$AUTH_PROVIDER_X509_CERT_URL_SERVICE_ACCOUNT_KEY\",\"client_x509_cert_url\": \"$CLIENT_X509_CERT_URL_SERVICE_ACCOUNT_KEY\"
         }" > serviceAccountKey.json
-        
+
     - name: Set up MySQL
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-          mysql -e 'USE ${{ env.DB_DATABASE }}; SHOW TABLES; ' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        mysql -e 'USE ${{ env.DB_DATABASE }}; SHOW TABLES; ' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
